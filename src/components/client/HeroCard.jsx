@@ -1,0 +1,23 @@
+import React from 'react';
+import { HiArrowRight } from 'react-icons/hi';
+
+const HeroCard = ({ head, count, btn_text }) => {
+  return (
+    <div className="bg-oc-purple rounded-lg shadow-md items-start px-4 py-4 flex flex-col justify-between">
+      {/* Header */}
+      <div className="text-lg font-semibold text-gray-700">{head}</div>
+
+      {/* Count */}
+      <div className="text-3xl font-bold text-[#605CFF] my-4">{count}</div>
+
+      {/* Button */}
+      <button className="px-4 py-2 flex justify-between items-center text-left text-[16px] bg-oc-purple w-full text-[#605CFF] rounded-md hover:bg-[#605CFF] hover:text-white transition duration-200">
+        <span>{btn_text}</span>
+        <HiArrowRight />
+      </button>
+
+    </div>
+  );
+};
+
+export default HeroCard;

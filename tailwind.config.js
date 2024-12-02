@@ -8,6 +8,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        'oc-purple': 'rgba(96, 92, 255, 0.2)',
+        'op-green': 'rgba(38, 123, 96, 20%)',
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
