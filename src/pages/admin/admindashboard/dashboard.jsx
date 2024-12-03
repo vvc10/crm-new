@@ -1,5 +1,6 @@
 import ChartBox from '@/components/admin/ChartBox';
 import HeroCard from '@/components/admin/HeroCard';
+import AdminNavbar from '@/components/navBar/AdminNavBar';
 import React from 'react';
 
 const AdminDashboard = () => {
@@ -29,24 +30,28 @@ const AdminDashboard = () => {
 
 
     return (
-        <div className='mt-[6%] h-full bg-white px-6 py-6'>
-            <div className='dashboard_hero'>
-                <div className='dashboard_hero_card grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
-                     {cardsData.map((card, index) => (
-                        <HeroCard
-                            key={index}
-                            head={card.head}
-                            count={card.count}
-                            btn_text={card.btn_text}
-                        />
-                    ))}
+        <>
+            <AdminNavbar />
+            <div className='mt-[6%] h-full bg-white px-6 py-6'>
+                <div className='dashboard_hero'>
+                    <div className='dashboard_hero_card grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+                        {cardsData.map((card, index) => (
+                            <HeroCard
+                                key={index}
+                                head={card.head}
+                                count={card.count}
+                                btn_text={card.btn_text}
+                            />
+                        ))}
 
-                </div>
-                <div className='mt-6'>
-                    <ChartBox chartData={chartData} />
+                    </div>
+                    <div className='mt-6'>
+                        <ChartBox chartData={chartData} />
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
+
     );
 };
 

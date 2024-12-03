@@ -24,7 +24,7 @@ export default function ClientPayment() {
 
   return (
 
-    <div className="flex mt-[6%] flex-col items-left justify-center w-full h-[100vh] bg-gray-50 text-left px-4">
+    <div className="flex mt-[7%] flex-col items-left justify-center w-full h-[100vh] bg-gray-50 text-left px-4">
       <h2 className="text-2xl font-semibold mb-2 px-2 text-gray-800">Secure Payment</h2>
       <p className="text-sm text-gray-500 px-2 mb-6">Your payment is protected by SSL encryption</p>
       

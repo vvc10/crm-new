@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { BarChart } from '@/components/ui/chart'
+import { BarChart } from '@/components/ui/chart_ad'
 
 const ChartBox = ({ chartData }) => {
   const valueFormatter = (value) => `${value} queries`;

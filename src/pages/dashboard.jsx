@@ -2,18 +2,15 @@
 
 
 import React from 'react'
-import AdminDashboard from './admin/adminDashboard/adminDashboard'
-import NavBar from '@/components/navBar/Navbar';
+import AdminDashboard from './admin/admindashboard/dashboard'
 import ClientDashboard from './user/userDashboard/clientDashboard';
+import ClientNavbar from '@/components/navBar/ClientNavbar';
 
 const main = () => {
   return (
     <div className=''>
-      <NavBar />
-      {/* if admin is logged in */}
-      {/* <AdminDashboard /> */}
-      {/* if client is logged in */}
-      <ClientDashboard/>
+      <ClientNavbar />
+      <ClientDashboard />
     </div>
   )
 }

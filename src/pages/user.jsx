@@ -1,15 +1,13 @@
 import React from 'react'
-import AdminUser from './admin/adminUser/adminUser'
+import AdminUser from './admin/adminuser/user'
 import NavBar from '@/components/navBar/Navbar'
 import ClientPayment from './user/userPayment/clientPayment'
+import ClientNavbar from '@/components/navBar/ClientNavbar'
 
 const user = () => {
     return (
         <div>
-            <NavBar />
-            {/* if admin is logged in */}
-            {/* <AdminUser /> */}
-            {/* if client is logged in */}
+            <ClientNavbar />
             <ClientPayment />
         </div>
     )

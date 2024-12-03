@@ -45,7 +45,7 @@ export const BarChart = ({
                   <div className="grid gap-2">
                     <div className="flex flex-col items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <div className="h-2 w-2 rounded-full bg-[#605CFF]" />
+                        <div className="h-2 w-2 rounded-full bg-[#267B60]" />
                         <span className="font-[600]">{payload[0].name}</span>
                       </div>
                       <span className="font-[500] opacity-80">
@@ -63,7 +63,7 @@ export const BarChart = ({
           <Bar
             key={category}
             dataKey={category}
-            fill="#605CFF" // Hex code for Tailwind's `green-900`
+            fill="#267B60" // Hex code for Tailwind's `green-900`
             radius={[4, 4, 0, 0]}
           />
         ))}

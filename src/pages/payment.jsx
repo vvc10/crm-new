@@ -1,16 +1,13 @@
 import React from 'react'
-import AdminPayment from './admin/adminPayment/adminPayment'
-import NavBar from '@/components/navBar/Navbar'
+import AdminPayment from './admin/adminpayment/payment'
 import ClientPayment from './user/userPayment/clientPayment'
+import ClientNavbar from '@/components/navBar/ClientNavbar'
 
 const payment = () => {
     return (
         <div>
 
-            <NavBar />
-            {/* if admin is logged in */}
-            {/* <AdminPayment/> */}
-            {/* if client is logged in */}
+            <ClientNavbar />
             <ClientPayment />
 
         </div>

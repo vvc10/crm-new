@@ -1,4 +1,6 @@
 "use client";
+import AdminNavbar from "@/components/navBar/AdminNavBar";
+import NavBar from "@/components/navBar/Navbar";
 import React, { useState } from "react";
 
 const AdminLogin = () => {
@@ -48,7 +50,9 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-[#267B60]">
+    <>
+      <AdminNavbar />
+      <div className="w-screen h-screen flex items-center justify-center bg-[#267B60]">
       <div className="w-full max-w-[400px] sm:max-w-[500px] lg:max-w-[549px] bg-white rounded-lg shadow-md p-6 relative">
         {/* Progress Bar */}
         <div className="w-full h-2 bg-gray-300 rounded-t-lg overflow-hidden mb-6">
@@ -98,6 +102,8 @@ const AdminLogin = () => {
         </form>
       </div>
     </div>
+    </>
+   
   );
 };
 
