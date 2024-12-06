@@ -1,6 +1,6 @@
 import React from 'react'
-import ClientPayment from '@/pages/user/userpayment/clientPayment'
-import ClientNavbar from '@/components/navBar/ClientNavbar.jsx'
+import ClientPayment from '@/pages/user/userpayment/payment'
+import ClientNavbar from '@/components/navbar/ClientNavbar'
 
 const User = () => {
     return (
