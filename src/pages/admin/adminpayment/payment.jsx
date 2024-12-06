@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import AdminNavbar from '@/components/navBar/AdminNavBar';
+import AdminNavbar from '@/components/navbar/AdminNavBar';
 import { jsPDF } from 'jspdf';
 import { IoDownloadOutline, IoEye } from 'react-icons/io5';
 

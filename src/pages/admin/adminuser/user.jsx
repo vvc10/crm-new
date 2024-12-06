@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import AdminNavbar from "@/components/navBar/AdminNavBar";
+import AdminNavbar from "@/components/navbar/AdminNavBar";
 import { MdDelete, MdOutlineDelete } from "react-icons/md";
 import { jsPDF } from "jspdf";
 import { AiOutlineUserAdd } from "react-icons/ai";

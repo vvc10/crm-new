@@ -1,7 +1,7 @@
 'use client'
 import ChartBox from '@/components/admin/ChartBox';
 import HeroCard from '@/components/admin/HeroCard';
-import AdminNavbar from '@/components/navBar/AdminNavBar';
+import AdminNavbar from '@/components/navbar/AdminNavBar';
 import React from 'react';
 
 const AdminDashboard = () => {
