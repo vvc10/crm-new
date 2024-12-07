@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
-
+import { HiOutlineCheckCircle } from "react-icons/hi2";
 const DeclarationPage = ({ formData, handleConfirmPayment }) => {
   const [signature, setSignature] = useState("");
   const [captchaVerified, setCaptchaVerified] = useState(false);
@@ -31,10 +31,10 @@ const DeclarationPage = ({ formData, handleConfirmPayment }) => {
       return;
     }
 
-    if (!captchaVerified) {
-      alert("Please verify the captcha.");
-      return;
-    }
+    // if (!captchaVerified) {
+    //   alert("Please verify the captcha.");
+    //   return;
+    // }
 
     if (!termsAccepted || !paymentDetailsAccepted) {
       alert("You must agree to both terms and conditions to proceed.");
@@ -46,8 +46,7 @@ const DeclarationPage = ({ formData, handleConfirmPayment }) => {
 
   return (
     <div className="space-y-6">
-      <h3 className="text-xl font-semibold text-gray-800 mb-4">Declaration</h3>
-      <div className="text-sm text-gray-700 mb-4">
+       <div className="text-sm text-gray-700 mb-4">
         <p className="mt-4">
           <strong>Terms & Conditions:</strong>
           <br />
@@ -105,7 +104,7 @@ const DeclarationPage = ({ formData, handleConfirmPayment }) => {
           value={signature}
           onChange={handleSignatureChange}
           placeholder="Type Your Sign"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full px-4 py-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           required
         />
         <p className="text-sm text-gray-500 mt-2">
@@ -114,12 +113,12 @@ const DeclarationPage = ({ formData, handleConfirmPayment }) => {
       </div>
 
       {/* Google reCAPTCHA */}
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <ReCAPTCHA
           sitekey="6LcMV5IqAAAAAPmki61SLL71NnyLFvZAiEYYp-8v" // Replace with your actual site key
           onChange={handleCaptchaChange}
         />
-      </div>
+      </div> */}
 
       {/* Terms and Conditions Checkboxes */}
       <div className="mt-4">
@@ -150,14 +149,14 @@ const DeclarationPage = ({ formData, handleConfirmPayment }) => {
       <div className="mt-6">
         <button
           onClick={handleSubmit}
-          disabled={!captchaVerified || !termsAccepted || !paymentDetailsAccepted || signature.length < 4}
-          className={`w-fit px-4 py-2 rounded-md transition ${
-            captchaVerified && termsAccepted && paymentDetailsAccepted && signature.length >= 4
+          disabled={!termsAccepted || !paymentDetailsAccepted || signature.length < 4}
+          className={`w-fit px-4 py-2 rounded-md transition ${termsAccepted && paymentDetailsAccepted && signature.length >= 4
               ? "bg-indigo-600 text-white hover:bg-indigo-700"
               : "bg-gray-400 text-gray-700 cursor-not-allowed"
-          }`}
+            }`}
         >
-          Confirm Payment
+          Confirm Payment 
+         
         </button>
         <p className="text-sm text-gray-500 mt-2">
           Important Legal Disclaimer: This payment form is in compliance with US banking and consumer protection laws. By agreeing to these terms, you consent to resolve any disputes through binding arbitration, if necessary. This form also complies with applicable data protection and privacy laws.
