@@ -96,7 +96,7 @@ const AdminNavbar = () => {
       {/* Mobile Menu */}
       {/* Mobile Menu */}
       <div
-        className={`transition-all duration-300 fixed w-full md:pt-0 pt-[15%] ease-in-out overflow-hidden text-gray-800 bg-white shadow-md ${isMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+        className={`transition-all duration-300 fixed w-full z-50 md:pt-0 pt-[15%] ease-in-out overflow-hidden text-gray-800 bg-white shadow-md ${isMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
           }`}
       >
         <div className="flex flex-col items-center gap-4 py-4 text-gray-800">
@@ -120,7 +120,7 @@ const AdminNavbar = () => {
             className="mt-4 cursor-pointer text-gray-700"
             onClick={() => setIsMenuOpen(false)} // Ensure menu closes on logout
           >
-            <Link href="/logout">Logout</Link>
+            <Link href="/landing">Logout</Link>
           </div>
         </div>
       </div>
