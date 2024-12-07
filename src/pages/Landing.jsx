@@ -4,7 +4,7 @@ import React from "react";
 const Landing = () => {
   return (
     <div className="flex flex-col gap-5 justify-center items-center min-h-screen bg-gradient-to-r from-[#605CFF99] to-[#267B60] text-white">
-      <h2 className="font-[700] text-[30px]">Welcome to Pixelpath CRM Portal!</h2>
+      <h2 className="font-[700] text-[30px] px-4">Welcome to Pixelpath CRM Portal!</h2>
       <div className="relative flex w-80 h-14 shadow-lg rounded-md overflow-hidden">
         {/* Left - Client Login */}
         <Link
