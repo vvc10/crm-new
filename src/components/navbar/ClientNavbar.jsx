@@ -73,7 +73,7 @@ const ClientNavbar = () => {
             <div className="absolute top-14 right-0 text-gray-800 bg-gray-200 shadow-lg rounded-md p-2 w-48">
               <ul>
                 <li className="cursor-pointer py-2 px-4 hover:text-red-500 hover:bg-gray-200">
-                  <Link href="/logout">Logout</Link>
+                <Link href="/landing/landingpage">Logout</Link>
                 </li>
               </ul>
             </div>
@@ -119,7 +119,7 @@ const ClientNavbar = () => {
             </Link>
           ))}
           <div className="mt-4 cursor-pointer">
-            <Link href="/landing">Logout</Link>
+          <Link href="/landing/landingpage">Logout</Link>
           </div>
         </div>
       </div>

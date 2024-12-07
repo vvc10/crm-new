@@ -72,7 +72,7 @@ const AdminNavbar = () => {
             <div className="absolute top-14 right-0 text-gray-800 bg-gray-200 shadow-lg rounded-md p-2 w-48">
               <ul>
                 <li className="cursor-pointer py-2 px-4 hover:text-red-500 hover:bg-gray-200">
-                  <Link href="/landing">Logout</Link>
+                  <Link href="/landing/landingpage">Logout</Link>
                 </li>
               </ul>
             </div>
@@ -120,7 +120,7 @@ const AdminNavbar = () => {
             className="mt-4 cursor-pointer text-gray-700"
             onClick={() => setIsMenuOpen(false)} // Ensure menu closes on logout
           >
-            <Link href="/landing">Logout</Link>
+            <Link href="/landing/landingpage">Logout</Link>
           </div>
         </div>
       </div>
