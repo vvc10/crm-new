@@ -2,12 +2,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import DeclarationPage from "@/components/client/Declaration";
+import PaymentDetailsModal from "@/pages/user/userpayment/paymentdetails";
 
 export default function ClientPayment({ handleConfirmPayment }) {
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     transactionId: "",
+    amountPaid: "",
     expiryDate: "",
     cvv: "",
     zip: "",
@@ -17,10 +19,28 @@ export default function ClientPayment({ handleConfirmPayment }) {
   const [isDeclarationAccepted, setIsDeclarationAccepted] = useState(false);
   const [selectedPaymentDetails, setSelectedPaymentDetails] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isConfirmed, setIsConfirmed] = useState(false); // New state for confirmation
+  const [isConfirmed, setIsConfirmed] = useState(false);
   const [paymentHistory, setPaymentHistory] = useState([
-    { id: 1, name: "John Doe", amount: "$100", date: "2024-12-05" },
-    { id: 2, name: "Jane Smith", amount: "$250", date: "2024-12-04" },
+    {
+      id: 1,
+      name: "John Doe",
+      amountPaid: "$100",
+      transactionId: "TX12345",
+      expiryDate: "2024-12-10",
+      cvv: "123",
+      zip: "110001",
+      date: "2024-12-05",
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      amountPaid: "$250",
+      transactionId: "TX67890",
+      expiryDate: "2024-12-15",
+      cvv: "456",
+      zip: "110002",
+      date: "2024-12-04",
+    },
   ]);
 
   const handleChange = (e) => {
@@ -33,12 +53,25 @@ export default function ClientPayment({ handleConfirmPayment }) {
     }
   };
 
+  const handleViewDetails = (payment) => {
+    setIsModalOpen(false);
+    setSelectedPaymentDetails(payment);
+  };
+
+  const handleCloseDetailsModal = () => {
+    setSelectedPaymentDetails(null);
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
     const newPayment = {
       id: paymentHistory.length + 1,
       name: formData.name,
-      amount: "$" + Math.floor(Math.random() * 1000),
+      amountPaid: `$${formData.amountPaid}`,
+      transactionId: formData.transactionId,
+      expiryDate: formData.expiryDate,
+      cvv: formData.cvv,
+      zip: formData.zip,
       date: new Date().toISOString().split("T")[0],
     };
     setPaymentHistory([newPayment, ...paymentHistory]);
@@ -48,17 +81,12 @@ export default function ClientPayment({ handleConfirmPayment }) {
     setFormData({
       name: "",
       transactionId: "",
+      amountPaid: "",
       expiryDate: "",
       cvv: "",
       zip: "",
     });
-    setIsConfirmed(false); // Reset confirmation state
-  };
-
-  const handleViewDetails = (payment) => {
-    setSelectedPaymentDetails(payment);
-    setIsModalOpen(true);
-    setIsDeclarationAccepted(false);
+    setIsConfirmed(false);
   };
 
   const filteredPayments = paymentHistory.filter((payment) =>
@@ -73,7 +101,7 @@ export default function ClientPayment({ handleConfirmPayment }) {
             Payment History
           </h2>
           <button
-            className={`px-4 py-2 rounded-lg font-medium bg-indigo-600 text-white`}
+            className="px-4 py-2 rounded-lg font-medium bg-indigo-600 text-white"
             onClick={() => setIsModalOpen(true)}
           >
             New Payment
@@ -98,7 +126,7 @@ export default function ClientPayment({ handleConfirmPayment }) {
                     Name
                   </th>
                   <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">
-                    Amount
+                    Amount Paid
                   </th>
                   <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">
                     Date
@@ -122,14 +150,15 @@ export default function ClientPayment({ handleConfirmPayment }) {
                   filteredPayments.map((payment, idx) => (
                     <tr
                       key={payment.id}
-                      className={`border-b ${idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                        }`}
+                      className={`border-b ${
+                        idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+                      }`}
                     >
                       <td className="px-4 py-2 text-sm text-gray-700">
                         {payment.name}
                       </td>
                       <td className="px-4 py-2 text-sm text-gray-700">
-                        {payment.amount}
+                        {payment.amountPaid}
                       </td>
                       <td className="px-4 py-2 text-sm text-gray-700">
                         {payment.date}
@@ -160,14 +189,15 @@ export default function ClientPayment({ handleConfirmPayment }) {
                   Declaration
                 </h3>
                 <DeclarationPage
-                  handleConfirmPayment={() => setIsConfirmed(true)} // Update confirmation state
+                  handleConfirmPayment={() => setIsConfirmed(true)}
                 />
                 <div className="sticky bottom-0 bg-white py-2">
                   <button
                     onClick={handleDeclarationAccept}
-                    className={`mt-4 w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:ring-4 focus:ring-green-500 ${isConfirmed ? "" : "opacity-50 cursor-not-allowed"
-                      }`}
-                    disabled={!isConfirmed} // Disable if not confirmed
+                    className={`mt-4 w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:ring-4 focus:ring-green-500 ${
+                      isConfirmed ? "" : "opacity-50 cursor-not-allowed"
+                    }`}
+                    disabled={!isConfirmed}
                   >
                     Accept Declaration
                   </button>
@@ -179,44 +209,44 @@ export default function ClientPayment({ handleConfirmPayment }) {
                   Payment Details
                 </h3>
                 <div className="space-y-4">
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border text-gray-800 border-gray-300 rounded-lg"
-                  />
-                  <input
-                    type="text"
-                    name="transactionId"
-                    placeholder="Transaction Id"
-                    value={formData.transactionId}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border text-gray-800 border-gray-300 rounded-lg"
-                  />
+                  {["name", "amountPaid", "transactionId", "date" ].map((field) => (
+                    <input
+                      key={field}
+                      type="text"
+                      name={field}
+                      placeholder={field.split(/(?=[A-Z])/).join(" ")}
+                      value={formData[field]}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 border text-gray-800 border-gray-300 rounded-lg"
+                    />
+                  ))}
 
-<div className="sticky bottom-0 bg-white py-2 flex justify-between items-center">
-                  <button
-                    onClick={() => setIsModalOpen(false)}
-                    className="w-[48%] bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 focus:ring-4 focus:ring-gray-500"
-                  >
-                    Close
-                  </button>
-                  <button
-                    type="submit"
-                    className="w-[48%] bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-500"
-                  >
-                    Submit Payment
-                  </button>
+                  <div className="sticky bottom-0 bg-white py-2 flex justify-between items-center">
+                    <button
+                      onClick={() => setIsModalOpen(false)}
+                      className="w-[48%] bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 focus:ring-4 focus:ring-gray-500"
+                    >
+                      Close
+                    </button>
+                    <button
+                      type="submit"
+                      className="w-[48%] bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-500"
+                    >
+                      Submit Payment
+                    </button>
+                  </div>
                 </div>
-
-                </div>
-               
               </form>
             )}
           </div>
         </div>
+      )}
+
+      {selectedPaymentDetails && (
+        <PaymentDetailsModal
+          payment={selectedPaymentDetails}
+          onClose={handleCloseDetailsModal}
+        />
       )}
     </div>
   );
