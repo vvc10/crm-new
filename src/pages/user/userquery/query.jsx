@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import axios from 'axios';
 
 const ClientQuery = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,11 +19,10 @@ const ClientQuery = () => {
   ]);
 
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
+    query: "",
+    descript: "",
     serviceType: [],
   });
-
 
   const openModal = (query) => {
     setSelectedQuery(query);
@@ -58,19 +58,43 @@ const ClientQuery = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add new query to queryData
-    setQueryData([
-      ...queryData,
-      { ...formData, badge: "pending" },
-    ]);
-    // Clear form
-    setFormData({
-      query: "",
-      serviceType: "",
-      descript: "",
-    });
+    
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('Token not found. Please login again.');
+      return;
+    }
+
+    const queryDataToSend = {
+      query_details: formData.descript,
+      serviceType: formData.serviceType,
+    };
+
+    try {
+      const response = await axios.post('/api/queries/create', queryDataToSend, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        setQueryData([
+          ...queryData,
+          { ...formData, badge: "pending" },
+        ]);
+        setFormData({
+          query: "",
+          serviceType: [],
+          descript: "",
+        });
+        console.log('Query created successfully');
+      }
+    } catch (error) {
+      console.error('Error creating query:', error);
+    }
   };
 
   return (
@@ -119,14 +143,11 @@ const ClientQuery = () => {
                   value={formData.query}
                   onChange={handleChange}
                   required
-                  className="block w-full h-14 border border-gray-300  text-gray-700  rounded-tl-lg px-4"
+                  className="block w-full h-14 border border-gray-300 text-gray-700 rounded-tl-lg px-4"
                 />
               </div>
               <div>
-                <label
-                  htmlFor="descript"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="descript" className="block text-sm font-medium text-gray-700">
                   Query Description
                 </label>
                 <textarea
@@ -139,15 +160,10 @@ const ClientQuery = () => {
                 ></textarea>
               </div>
               <div>
-                <label
-                  htmlFor="serviceType"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="serviceType" className="block text-sm font-medium text-gray-700">
                   Service Type
                 </label>
                 <div className="space-y-2 mt-2 text-gray-700">
-
-
                   <label className="flex items-center space-x-2">
                     <input
                       type="checkbox"
@@ -239,3 +255,4 @@ const ClientQuery = () => {
 };
 
 export default ClientQuery;
+ 
