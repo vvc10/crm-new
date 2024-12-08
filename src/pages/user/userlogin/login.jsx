@@ -110,7 +110,7 @@ const ClientLogin = () => {
                   value={email}
                   onChange={handleEmailChange}
                   placeholder="Enter your email"
-                  className="w-full px-4 py-2 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2 text-base border text-gray-700 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <button
