@@ -53,30 +53,37 @@ const ClientLogin = () => {
       setError("Please enter a valid email.");
       return;
     }
-
+  
     try {
-      const response = await fetch("https://crm-new-backend.onrender.com/api/v1/auth/generate-login-otp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-
+      const response = await fetch(
+        "https://crm-new-backend.onrender.com/api/v1/auth/generate-login-otp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
+  
+      console.log("Response:", response);
+  
       const data = await response.json();
-
+  
+      console.log("Response data:", data);
+  
       if (response.ok && data.message === "OTP sent successfully to your email.") {
         setIsOtpSent(true);
         setStep(2);
       } else {
-        setError("Failed to send OTP. Please try again.");
+        setError(data.message || "Failed to send OTP. Please try again.");
       }
     } catch (err) {
       console.error("Error generating OTP:", err);
       setError("An error occurred while sending OTP.");
     }
   };
-
+  
   return (
     <div className="w-screen h-screen flex flex-col gap-4 items-center justify-center bg-[#605CFF99]">
       <h2 className="font-[700] text-[24px]">Welcome to Pixelpath CRM Portal!</h2>
