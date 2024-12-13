@@ -8,7 +8,6 @@ const ClientLogin = () => {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
-  const [isOtpSent, setIsOtpSent] = useState(false);
   const router = useRouter();
 
   const handleEmailChange = (e) => setEmail(e.target.value);
@@ -17,13 +16,13 @@ const ClientLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!otp) {
-      setError("Please enter OTP.");
+    if (!email || !otp) {
+      setError("Please fill in both email and OTP.");
       return;
     }
 
     try {
-      const response = await fetch("https://crm-new-backend.onrender.com/api/v1/auth/login", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/v1/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,22 +32,38 @@ const ClientLogin = () => {
 
       const data = await response.json();
 
+      // Log the response data
+      console.log("Login response:", data);
+
       if (response.ok && data.message === "Login successful.") {
-        localStorage.setItem("authToken", data.token);
-        console.log("Login successful.");
-        router.push("/dashboard");
+        const { user_id, token, name } = data;  // Extracting the necessary fields
+
+        localStorage.setItem("auth-token", token);
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("user_id", user_id);
+
+        console.log("Token saved (login):", localStorage.getItem("auth-token"));
+        console.log("user id :::", user_id);
+
+        router.push({
+          pathname: "/dashboard",
+          query: { name, email, user_id: user_id },
+        });
+
       } else if (response.status === 401) {
         setError("Invalid OTP. Please try again.");
+      } else if (response.status === 404) {
+        setError("User not found. Please check your email.");
       } else {
         setError("An error occurred during login.");
       }
     } catch (err) {
       console.error("Error during login:", err);
-      setError("Failed to verify OTP. Please try again.");
+      setError("Failed to login. Please try again.");
     }
   };
 
-  const handleNextStep = async () => {
+  const handleSendOtp = async () => {
     if (!email || !email.includes("@")) {
       setError("Please enter a valid email.");
       return;
@@ -56,7 +71,7 @@ const ClientLogin = () => {
   
     try {
       const response = await fetch(
-        "https://crm-new-backend.onrender.com/api/v1/auth/generate-login-otp",
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/v1/auth/generate-login-otp`,
         {
           method: "POST",
           headers: {
@@ -66,20 +81,23 @@ const ClientLogin = () => {
         }
       );
   
-      console.log("Response:", response);
-  
-      const data = await response.json();
-  
-      console.log("Response data:", data);
+      // Check if the response is valid JSON
+      let data = {};
+      try {
+        data = await response.json();
+      } catch (err) {
+        // If the response is not valid JSON, log it as a string message
+        data = { message: response.statusText };
+      }
   
       if (response.ok && data.message === "OTP sent successfully to your email.") {
-        setIsOtpSent(true);
-        setStep(2);
+        setStep(2); // Move to step 2 after OTP is sent
       } else {
+        // Handle the error message, ensuring it's from the response body
         setError(data.message || "Failed to send OTP. Please try again.");
       }
     } catch (err) {
-      console.error("Error generating OTP:", err);
+      console.error("Error sending OTP:", err);
       setError("An error occurred while sending OTP.");
     }
   };
@@ -115,10 +133,10 @@ const ClientLogin = () => {
               </div>
               <button
                 type="button"
-                onClick={handleNextStep}
+                onClick={handleSendOtp}
                 className="w-full h-12 bg-[#605CFF] text-white text-lg font-medium rounded-lg mt-4 hover:bg-indigo-700"
               >
-                Next
+                Send OTP
               </button>
               <p className="text-gray-800 mx-auto w-fit py-2">
                 Don&apos;t have an account?{" "}

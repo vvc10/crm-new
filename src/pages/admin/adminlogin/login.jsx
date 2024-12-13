@@ -1,92 +1,125 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import axios from "axios";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const AdminLogin = () => {
-  const [adminId, setAdminId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isOtpSent, setIsOtpSent] = useState(false);
   const router = useRouter();
 
-  // Dummy credentials
-  const dummyAdminId = "admin";
-  const dummyPassword = "password123";
-
-  const handleAdminIdChange = (e) => setAdminId(e.target.value);
+  const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
+  const handleOtpChange = (e) => setOtp(e.target.value);
 
-  const handleSubmit = (e) => {
+  const handleSendOtp = async (e) => {
     e.preventDefault();
 
-    // Validate the input fields
-    if (!adminId || !password) {
-      setError("Please enter both Admin ID and Password");
+    if (!email || !password) {
+      setError("Please fill in both email and password fields.");
       return;
     }
 
-    // Dummy authentication logic
-    if (adminId === dummyAdminId && password === dummyPassword) {
-      // Clear error and navigate to the dashboard
-      setError("");
-      router.push("/admin/admindashboard/dashboard");
-    } else {
-      setError("Invalid Admin ID or Password");
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/v1/admin/send-otp`, { email, password });
+      if (response.status === 200) {
+        setSuccess("OTP sent to your email!");
+        setIsOtpSent(true);
+        setError("");
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to send OTP.");
+      setSuccess("");
     }
   };
 
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+  
+    if (!email || !password || !otp) {
+      setError("Please fill in all fields.");
+      return;
+    }
+  
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/v1/admin/login`, { email, password, otp });
+      if (response.status === 200) {
+        setSuccess("Login successful!");
+        setError("");
+  
+        // Save the token in localStorage
+        localStorage.setItem("adminToken", response.data.token); // Save token to localStorage
+  
+        setTimeout(() => {
+          router.push("/admin/admindashboard/dashboard");
+        }, 2000);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to verify OTP.");
+      setSuccess("");
+    }
+  };
+  
+
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-[#267B60]">
-      <div className="w-full max-w-[400px] sm:max-w-[500px] lg:max-w-[549px] bg-white rounded-lg shadow-md p-6 relative">
-        {/* Progress Bar */}
-        <div className="w-full h-2 bg-gray-300 rounded-t-lg overflow-hidden mb-6">
-          <div className="h-full bg-[#267B60]"></div>
-        </div>
+      <div className="w-full max-w-[400px] bg-white rounded-lg shadow-md p-6">
+        <h3 className="text-2xl font-bold text-center text-[#555555]">Admin Login</h3>
+        {error && <p className="text-red-600 text-center my-4">{error}</p>}
+        {success && <p className="text-green-600 text-center my-4">{success}</p>}
 
-        {/* Admin Login Form */}
-        <h3 className="text-2xl font-bold mt-4 text-[#555555] text-center">Admin Login</h3>
-        <h6 className="text-lg text-[#555555] text-center mb-6">Enter Admin Credentials</h6>
-
-        {/* Error message */}
-        {error && <div className="text-red-600 text-center mb-4">{error}</div>}
-
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={isOtpSent ? handleVerifyOtp : handleSendOtp}>
           <div className="mb-4">
-            <label className="block text-lg text-gray-700" htmlFor="adminId">
-              Admin ID
-            </label>
+            <label className="block text-lg text-gray-700">Email</label>
             <input
-              type="text"
-              name="adminId"
-              id="adminId"
-              value={adminId}
-              onChange={handleAdminIdChange}
-              placeholder="Enter Admin ID"
-              className="w-full px-4 py-2 text-base border text-gray-700 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              type="email"
+              value={email}
+              onChange={handleEmailChange}
+              placeholder="Enter your email"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
             />
           </div>
-
           <div className="mb-4">
-            <label className="block text-lg text-[#555555]" htmlFor="password">
-              Password
-            </label>
+            <label className="block text-lg text-gray-700">Password</label>
             <input
               type="password"
-              name="password"
-              id="password"
               value={password}
               onChange={handlePasswordChange}
-              placeholder="Enter Password"
-              className="w-full px-4 py-2 text-base border text-gray-700 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Enter your password"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
             />
           </div>
-
+          {isOtpSent && (
+            <div className="mb-4">
+              <label className="block text-lg text-gray-700">OTP</label>
+              <input
+                type="text"
+                value={otp}
+                onChange={handleOtpChange}
+                placeholder="Enter OTP"
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+              />
+            </div>
+          )}
           <button
             type="submit"
-            className="w-full h-12 bg-[#267B60] text-white text-lg font-medium rounded-lg mt-4 hover:bg-[#21824E]"
+            className="w-full py-2 bg-[#267B60] text-white rounded-lg hover:bg-[#21824E]"
           >
-            Submit
+            {isOtpSent ? "Verify OTP" : "Send OTP"}
           </button>
         </form>
+
+        <p className="text-gray-800 mx-auto w-fit py-2">
+          Don&apos;t have an account?{" "}
+          <Link className="text-purple-900 font-[600] px-2" href="/admin/adminlogin/register">
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   );

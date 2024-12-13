@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const RegisterAccount = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +19,8 @@ const RegisterAccount = () => {
   const [error, setError] = useState(false);
   const [showOtpForm, setShowOtpForm] = useState(false); // Toggle between forms
   const [otpResent, setOtpResent] = useState(false); // To handle OTP resend status
+
+  const router = useRouter(); // Initialize Next.js router
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,18 +42,25 @@ const RegisterAccount = () => {
     setOtpResent(false); // Reset resend status
 
     if (!validateForm()) {
-      setMessage("Please enter valid email and contact number.");
+      setMessage("Please enter a valid email and contact number.");
       setError(true);
       setLoading(false);
       return;
     }
 
     try {
-      const response = await axios.post("http://localhost:3001/api/v1/auth/register", formData);
-      setMessage(response.data.message || "OTP sent to your email/contact number.");
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/v1/auth/register`,
+        formData
+      );
+      setMessage(response.data.message || "OTP sent to your email.");
       setShowOtpForm(true); // Show OTP verification form
     } catch (error) {
-      setMessage("Error during registration. Please try again.");
+      if (error.response && error.response.status === 409) {
+        setMessage("Email already registered.");
+      } else {
+        setMessage("Error during registration. Please try again.");
+      }
       setError(true);
     } finally {
       setLoading(false);
@@ -64,11 +74,21 @@ const RegisterAccount = () => {
     setError(false);
 
     try {
-      const response = await axios.post("http://localhost:3001/api/v1/auth/verify-otp", { email: formData.email, otp });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/v1/auth/login`,
+        { email: formData.email, otp }
+      );
       setMessage(response.data.message || "Registration successful!");
       setShowOtpForm(false); // Reset after successful verification
+      setTimeout(() => {
+        router.push("/user/userlogin/login"); // Navigate to login page
+      }, 2000); // Add a slight delay for better user experience
     } catch (error) {
-      setMessage("Invalid OTP. Please try again.");
+      if (error.response && error.response.status === 401) {
+        setMessage("Invalid OTP. Please try again.");
+      } else {
+        setMessage("Error verifying OTP. Please try again.");
+      }
       setError(true);
     } finally {
       setLoading(false);
@@ -81,8 +101,11 @@ const RegisterAccount = () => {
     setError(false);
 
     try {
-      const response = await axios.post("http://localhost:3001/api/v1/auth/resend-otp", { email: formData.email });
-      setMessage("OTP sent again, please check your email/contact number.");
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/v1/auth/generate-login-otp`,
+        { email: formData.email }
+      );
+      setMessage("OTP sent again. Please check your email.");
       setOtpResent(true); // Set OTP resent status
     } catch (error) {
       setMessage("Error resending OTP. Please try again.");
@@ -109,26 +132,29 @@ const RegisterAccount = () => {
         )}
         {!showOtpForm ? (
           <form onSubmit={handleRegisterSubmit}>
-            {["name", "email", "contact_number", "address", "location"].map((field) => (
-              <div key={field} className="mb-4">
-                <label
-                  htmlFor={field}
-                  className="block text-lg font-medium text-gray-700"
-                >
-                  {field.replace("_", " ").charAt(0).toUpperCase() + field.slice(1)}
-                </label>
-                <input
-                  type="text"
-                  name={field}
-                  id={field}
-                  value={formData[field]}
-                  onChange={handleChange}
-                  placeholder={`Enter ${field.replace("_", " ")}`}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none text-black"
-                  required
-                />
-              </div>
-            ))}
+            {["name", "email", "contact_number", "address", "location"].map(
+              (field) => (
+                <div key={field} className="mb-4">
+                  <label
+                    htmlFor={field}
+                    className="block text-lg font-medium text-gray-700"
+                  >
+                    {field.replace("_", " ").charAt(0).toUpperCase() +
+                      field.slice(1)}
+                  </label>
+                  <input
+                    type="text"
+                    name={field}
+                    id={field}
+                    value={formData[field]}
+                    onChange={handleChange}
+                    placeholder={`Enter ${field.replace("_", " ")}`}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none text-black"
+                    required
+                  />
+                </div>
+              )
+            )}
             <button
               type="submit"
               className="w-full h-12 bg-[#605CFF] text-white text-lg font-medium rounded-lg mt-4"
@@ -181,7 +207,10 @@ const RegisterAccount = () => {
           <div className="text-center mt-4">
             <p className="text-gray-600">
               Already have an account?
-              <Link className="text-purple-900 font-[600] px-2" href="/user/userlogin/login">
+              <Link
+                className="text-purple-900 font-[600] px-2"
+                href="/user/userlogin/login"
+              >
                 Login
               </Link>
             </p>

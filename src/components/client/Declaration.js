@@ -1,53 +1,19 @@
 import { useState } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
-import { HiOutlineCheckCircle } from "react-icons/hi2";
-const DeclarationPage = ({ formData, handleConfirmPayment }) => {
-  const [signature, setSignature] = useState("");
-  const [captchaVerified, setCaptchaVerified] = useState(false);
-  const [termsAccepted, setTermsAccepted] = useState(false);
-  const [paymentDetailsAccepted, setPaymentDetailsAccepted] = useState(false);
+
+const DeclarationPage = ({ handleConfirmPayment }) => {
+  const [isTermsChecked, setIsTermsChecked] = useState(false);
+  const [isPaymentDetailsChecked, setIsPaymentDetailsChecked] = useState(false);
+
+  const isConfirmed = isTermsChecked && isPaymentDetailsChecked;
+  const [signature, setSignature] = useState("");  // Add state for the signature
 
   const handleSignatureChange = (e) => {
     setSignature(e.target.value);
   };
-
-  const handleCaptchaChange = (value) => {
-    setCaptchaVerified(!!value);
-  };
-
-  const handleTermsChange = (e) => {
-    setTermsAccepted(e.target.checked);
-  };
-
-  const handlePaymentDetailsChange = (e) => {
-    setPaymentDetailsAccepted(e.target.checked);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (signature.length < 4 || signature.length > 28) {
-      alert("Signature must be between 4 and 28 characters.");
-      return;
-    }
-
-    // if (!captchaVerified) {
-    //   alert("Please verify the captcha.");
-    //   return;
-    // }
-
-    if (!termsAccepted || !paymentDetailsAccepted) {
-      alert("You must agree to both terms and conditions to proceed.");
-      return;
-    }
-
-    handleConfirmPayment();
-  };
-
   return (
-    <div className="space-y-6">
-       <div className="text-sm text-gray-700 mb-4">
-        <p className="mt-4">
+    <div className="declaration-page space-y-4">
+      <h3 className="text-lg font-semibold text-gray-800">Declaration</h3>
+      <p className="mt-4">
           <strong>Terms & Conditions:</strong>
           <br />
           By submitting this payment, you agree to the following terms and conditions:
@@ -94,7 +60,7 @@ const DeclarationPage = ({ formData, handleConfirmPayment }) => {
           <strong>Agreement:</strong><br />
           By submitting this payment, you agree to the above terms and conditions and authorize the payment to be processed.
         </p>
-      </div>
+      
 
       {/* Signature Input */}
       <div>
@@ -112,56 +78,41 @@ const DeclarationPage = ({ formData, handleConfirmPayment }) => {
         </p>
       </div>
 
-      {/* Google reCAPTCHA */}
-      {/* <div className="mt-4">
-        <ReCAPTCHA
-          sitekey="6LcMV5IqAAAAAPmki61SLL71NnyLFvZAiEYYp-8v" // Replace with your actual site key
-          onChange={handleCaptchaChange}
+      <div className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          id="terms"
+          className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+          checked={isTermsChecked}
+          onChange={(e) => setIsTermsChecked(e.target.checked)}
         />
-      </div> */}
-
-      {/* Terms and Conditions Checkboxes */}
-      <div className="mt-4">
-        <label className="inline-flex items-center text-sm text-gray-700">
-          <input
-            type="checkbox"
-            checked={termsAccepted}
-            onChange={handleTermsChange}
-            className="form-checkbox h-5 w-5 text-indigo-600"
-          />
-          <span className="ml-2">I agree to the terms and conditions.</span>
+        <label htmlFor="terms" className="text-sm text-gray-700">
+          I agree to the <strong>Terms and Conditions</strong>.
         </label>
       </div>
 
-      <div className="mt-4">
-        <label className="inline-flex items-center text-sm text-gray-700">
-          <input
-            type="checkbox"
-            checked={paymentDetailsAccepted}
-            onChange={handlePaymentDetailsChange}
-            className="form-checkbox h-5 w-5 text-indigo-600"
-          />
-          <span className="ml-2">I acknowledge the payment details and agree to the charges.</span>
+      <div className="flex items-center space-x-2 pb-2">
+        <input
+          type="checkbox"
+          id="paymentDetails"
+          className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+          checked={isPaymentDetailsChecked}
+          onChange={(e) => setIsPaymentDetailsChecked(e.target.checked)}
+        />
+        <label htmlFor="paymentDetails" className="text-sm text-gray-700">
+          I confirm that the <strong>payment details provided</strong> are correct and valid.
         </label>
       </div>
 
-      {/* Confirm Payment Button */}
-      <div className="mt-6">
-        <button
-          onClick={handleSubmit}
-          disabled={!termsAccepted || !paymentDetailsAccepted || signature.length < 4}
-          className={`w-fit px-4 py-2 rounded-md transition ${termsAccepted && paymentDetailsAccepted && signature.length >= 4
-              ? "bg-indigo-600 text-white hover:bg-indigo-700"
-              : "bg-gray-400 text-gray-700 cursor-not-allowed"
-            }`}
-        >
-          Confirm Payment 
-         
-        </button>
-        <p className="text-sm text-gray-500 mt-2">
-          Important Legal Disclaimer: This payment form is in compliance with US banking and consumer protection laws. By agreeing to these terms, you consent to resolve any disputes through binding arbitration, if necessary. This form also complies with applicable data protection and privacy laws.
-        </p>
-      </div>
+      <button
+        onClick={() => isConfirmed && handleConfirmPayment()}
+        className={`w-full bg-green-600 text-white px-4 py-2 rounded-md mt-4 ${
+          isConfirmed ? "hover:bg-green-700" : "opacity-50 cursor-not-allowed"
+        }`}
+        disabled={!isConfirmed}
+      >
+        Confirm and Proceed
+      </button>
     </div>
   );
 };

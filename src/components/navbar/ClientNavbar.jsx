@@ -46,7 +46,7 @@ const ClientNavbar = () => {
 
     try {
       const response = await axios.post(
-        "https://crm-new-backend.onrender.com/api/v1/auth/logout",
+        "http://localhost:3001/api/v1/auth/logout",
         {},
         {
           headers: {

@@ -34,7 +34,7 @@ const AdminNavbar = () => {
   return (
     <div>
       {/* Navbar for Desktop */}
-      <div className="flex items-center justify-between px-6 py-4 bg-white hidden md:flex fixed w-full top-0 z-50">
+      <div className="items-center justify-between hidden  px-6 py-4 bg-white md:flex fixed w-full top-0 z-[1000]">
         <div className="text-2xl font-bold text-[#267B60] cursor-pointer">
           <Link href="/admin/admindashboard/dashboard">PixelPath Admin</Link>
         </div>
@@ -80,13 +80,13 @@ const AdminNavbar = () => {
       </div>
 
       {/* Navbar for Mobile */}
-      <div className="md:hidden flex justify-between items-center px-6 py-5 bg-[#267B60] shadow-md fixed w-full top-0 z-[1000]">
+      <div className="md:hidden flex justify-between items-center px-6 py-5 z-[6000] bg-[#267B60] shadow-md fixed w-full top-0 ">
         <div className="text-2xl font-bold text-white">
           <Link href="/admin/admindashboard/dashboard">PixelPath Admin</Link>
         </div>
         <div
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="cursor-pointer z-[1100]" // Ensure button is above other elements
+          className="cursor-pointer z-[1200]" // Ensure button is above other elements
         >
           {isMenuOpen ? <HiX size={30} color="white" /> : <HiMenu size={30} color="white" />}
         </div>
@@ -94,10 +94,10 @@ const AdminNavbar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`transition-all duration-300 fixed w-full z-[999] pt-[15%] ease-in-out overflow-hidden text-gray-800 bg-white shadow-md ${isMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+        className={` transition-all duration-300 block md:hidden fixed w-full z-[5000] pt-[15%] ease-in-out overflow-hidden text-gray-800 bg-white shadow-md ${isMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
           }`}
       >
-        <div className="flex flex-col items-center gap-4 py-4 text-gray-800">
+        <div className="flex flex-col items-center gap-4 py-4 text-gray-800 z-[5000]">
           {tabs.map((item) => (
             <Link key={item.name} href={item.link} passHref>
               <div
@@ -107,8 +107,8 @@ const AdminNavbar = () => {
                 }}
                 className={`px-4 py-2 text-[16px] cursor-pointer rounded-md ${activeTab === item.name
                   ? "bg-[rgba(38,123,96,0.8)] text-white"
-                  : "text-[#555555]"
-                  }`}
+                  : "text-[#555555]"}`
+                }
               >
                 {item.name}
               </div>
