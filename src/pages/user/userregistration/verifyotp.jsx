@@ -78,7 +78,7 @@ const VerifyOTP = () => {
         </form>
         <div className="text-center mt-4">
           <p className="text-gray-600">
-            Didn't receive an OTP?
+            Didn&apos;t receive an OTP?
             <button
               className="text-purple-900 font-[600] px-2"
               onClick={async () => {
