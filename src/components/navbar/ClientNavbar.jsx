@@ -36,7 +36,7 @@ const ClientNavbar = () => {
   };
 
   const handleLogout = async () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("auth-token");
 
     if (!token) {
       console.warn("No token found. Redirecting to login.");
@@ -58,7 +58,7 @@ const ClientNavbar = () => {
     } catch (error) {
       console.error("Error logging out:", error);
     } finally {
-      localStorage.removeItem("token");
+      localStorage.removeItem("auth-token");
       router.push("/");
     }
   };

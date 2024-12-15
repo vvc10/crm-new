@@ -49,7 +49,7 @@ const AdminLogin = () => {
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/v1/admin/login`, { email, password, otp });
       if (response.status === 200) {
-        setSuccess("Login successful!");
+        setSuccess("Login successful! redirecting to dashboard..");
         setError("");
   
         // Save the token in localStorage

@@ -4,6 +4,7 @@ import { HiMenu, HiX } from "react-icons/hi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import { useRouter } from "next/router"; // Import useRouter for navigation
 
 const AdminNavbar = () => {
   const tabs = [
@@ -15,26 +16,59 @@ const AdminNavbar = () => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState(tabs[0].link);
+  const [activeTab, setActiveTab] = useState(tabs[0].link); // Default to Dashboard
+  const router = useRouter(); // Initialize router for navigation
 
+  // Set active tab on page load
   useEffect(() => {
     const savedTab = localStorage.getItem("activeTab");
     if (savedTab) {
       setActiveTab(savedTab);
     } else {
-      setActiveTab(tabs[0].name);
+      setActiveTab(tabs[0].link); // Default to Dashboard
     }
   }, [tabs]);
 
-  const handleTabClick = (tabName) => {
-    setActiveTab(tabName);
-    localStorage.setItem("activeTab", tabName);
+  // Save active tab to localStorage and update state
+  const handleTabClick = (tabLink) => {
+    setActiveTab(tabLink);
+    localStorage.setItem("activeTab", tabLink);
+  };
+
+  // Handle logout by removing the adminToken and redirecting
+  const handleLogout = async () => {
+    const token = localStorage.getItem("adminToken");
+
+    if (!token) {
+      console.warn("No token found. Redirecting to login.");
+      router.push("/");
+      return;
+    }
+
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/api/v1/auth/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data.message);
+    } catch (error) {
+      console.error("Error logging out:", error);
+    } finally {
+      localStorage.removeItem("adminToken");
+      router.push("/");
+    }
   };
 
   return (
     <div>
       {/* Navbar for Desktop */}
-      <div className="items-center justify-between hidden  px-6 py-4 bg-white md:flex fixed w-full top-0 z-[1000]">
+      <div className="items-center justify-between hidden px-6 py-4 bg-white md:flex fixed w-full top-0 z-[1000]">
         <div className="text-2xl font-bold text-[#267B60] cursor-pointer">
           <Link href="/admin/admindashboard/dashboard">PixelPath Admin</Link>
         </div>
@@ -43,11 +77,12 @@ const AdminNavbar = () => {
           {tabs.map((item) => (
             <Link key={item.name} href={item.link} passHref>
               <div
-                onClick={() => handleTabClick(item.name)}
-                className={`cursor-pointer px-2 py-2 text-black rounded-[8px] ${activeTab === item.name
-                  ? "bg-[rgba(38,123,96,0.8)] text-white"
-                  : "bg-transparent"
-                  }`}
+                onClick={() => handleTabClick(item.link)}
+                className={`cursor-pointer px-2 py-2 text-black rounded-[8px] ${
+                  activeTab === item.link
+                    ? "bg-[rgba(38,123,96,0.8)] text-white"
+                    : "bg-transparent"
+                }`}
               >
                 {item.name}
               </div>
@@ -70,8 +105,11 @@ const AdminNavbar = () => {
           {isProfileOpen && (
             <div className="absolute top-14 right-0 text-gray-800 bg-gray-200 shadow-lg rounded-md p-2 w-48">
               <ul>
-                <li className="cursor-pointer py-2 px-4 hover:text-red-500 hover:bg-gray-200">
-                  <Link href="/landing/landingpage">Logout</Link>
+                <li
+                  className="cursor-pointer py-2 px-4 hover:text-red-500 hover:bg-gray-200"
+                  onClick={handleLogout} // Handle logout on click
+                >
+                  Logout
                 </li>
               </ul>
             </div>
@@ -94,21 +132,23 @@ const AdminNavbar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={` transition-all duration-300 block md:hidden fixed w-full z-[5000] pt-[15%] ease-in-out overflow-hidden text-gray-800 bg-white shadow-md ${isMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-          }`}
+        className={` transition-all duration-300 block md:hidden fixed w-full z-[5000] pt-[15%] ease-in-out overflow-hidden text-gray-800 bg-white shadow-md ${
+          isMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+        }`}
       >
         <div className="flex flex-col items-center gap-4 py-4 text-gray-800 z-[5000]">
           {tabs.map((item) => (
             <Link key={item.name} href={item.link} passHref>
               <div
                 onClick={() => {
-                  handleTabClick(item.name);
+                  handleTabClick(item.link);
                   setIsMenuOpen(false);
                 }}
-                className={`px-4 py-2 text-[16px] cursor-pointer rounded-md ${activeTab === item.name
-                  ? "bg-[rgba(38,123,96,0.8)] text-white"
-                  : "text-[#555555]"}`
-                }
+                className={`px-4 py-2 text-[16px] cursor-pointer rounded-md ${
+                  activeTab === item.link
+                    ? "bg-[rgba(38,123,96,0.8)] text-white"
+                    : "text-[#555555]"
+                }`}
               >
                 {item.name}
               </div>
@@ -116,9 +156,9 @@ const AdminNavbar = () => {
           ))}
           <div
             className="mt-4 cursor-pointer text-gray-700"
-            onClick={() => setIsMenuOpen(false)}
+            onClick={handleLogout} // Handle logout on click
           >
-            <Link href="/landing/landingpage">Logout</Link>
+            Logout
           </div>
         </div>
       </div>

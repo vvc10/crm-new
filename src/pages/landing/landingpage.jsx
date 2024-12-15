@@ -22,12 +22,7 @@ const LandingPage = () => {
                 </Link>
 
             </div>
-            <Link
-                href="/dashboard"
-                className="w-1/2 flex justify-center items-center bg-gray-599 text-white font-semibold hover:brightness-110 transition-all duration-300"
-            >
-                Continue as Guest
-            </Link>
+          
         </div>
     );
 };
